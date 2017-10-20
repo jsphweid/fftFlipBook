@@ -53,6 +53,7 @@
     "tslint-config-airbnb": "^5.3.0",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "^2.5.3",
+    "web-audio-buffer-queue": "^1.0.0",
     "webpack": "^3.8.1",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.2"
