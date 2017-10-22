@@ -2,8 +2,8 @@ import * as React from 'react'
 import Settings from './settings/settings'
 import FileLoader from './file-loader/file-loader'
 import FlipBook from './flip-book/flip-book'
-import AudioFile from './file-loader/audio-file'
-import AudioGraph from './audio-graph'
+import AudioFile from './audio-engine/audio-file'
+import AudioGraph from './audio-engine/audio-graph'
 import LoadingStatus from './status/status'
 
 export interface AppProps {

@@ -1,4 +1,4 @@
-import AudioGraph from '../audio-graph'
+import AudioGraph from './audio-graph'
 
 export default class SpecialNode {
 
@@ -31,9 +31,5 @@ export default class SpecialNode {
         }
         return float32Array
     }
-
-
-
-
 
 }

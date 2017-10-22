@@ -20,7 +20,7 @@ export default class LoadingStatus extends React.Component<FileLoaderProps> {
         const items: statusListItem[] = [
             { content: `File has been uploaded.`, completed: this.props.fileUploaded },
             { content: `Array of chunked up buffers has been created.`, completed: this.props.chunkArrayCompleted },
-            { content: `Array of chunked up buffers -- modified to loop -- has been created`, completed: this.props.modifiedChunkArrayCompleted },
+            { content: `Array of chunked up buffers -- modified to loop -- has been created`, completed: this.props.modifiedChunkArrayCompleted }
         ]
 
         return (

@@ -1,4 +1,4 @@
-import SpecialNode from './file-loader/audio-buffer-queue'
+import SpecialNode from './audio-buffer-queue'
 
 export default class AudioGraph {
 

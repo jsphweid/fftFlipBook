@@ -9,7 +9,7 @@
     "build:artifacts": "webpack --config webpack.prod.config.js",
     "build:package": "tsc && npm run build:sass",
     "build:sass": "node-sass src/styles.scss dist/package/styles.css",
-    "temp": "http-server ./src/app/file-loader --cors",
+    "temp": "http-server ./src/app/audio-engine --cors",
     "clean": "rm -rf dist",
     "lint": "tslint -p ./tsconfig.json",
     "test": "npm run lint && jest -t",
