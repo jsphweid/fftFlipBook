@@ -1,35 +1,28 @@
 import AudioGraph from './audio-graph'
+import AudioFile from './audio-file'
 
 export default class SpecialNode {
 
     tempIndex: number
 
+    audioFile: AudioFile
+
     specialProcessorNode: ScriptProcessorNode
     audioContext: AudioContext
 
-    constructor(audioContext: AudioContext) {
+    constructor(audioContext: AudioContext, audioFile: AudioFile) {
         this.audioContext = audioContext
         this.tempIndex = 0
-
-        const whiteNoiseBuffer = SpecialNode.createBasicBuffer(() => Math.random() * 2 - 1)
-        const silentBuffer = SpecialNode.createBasicBuffer(() => 0)
 
         this.specialProcessorNode = this.audioContext.createScriptProcessor(AudioGraph.BUFFER_SIZE, 0, 1)
         this.specialProcessorNode.addEventListener('audioprocess', (e: AudioProcessingEvent) => {
             const out: AudioBuffer = e.outputBuffer
             this.tempIndex++
             if (this.tempIndex > 20) this.tempIndex = 0 // reset
-            out.copyToChannel(silentBuffer, 0)
+            // out.copyToChannel(silentBuffer, 0)
         })
 
     }
 
-    static createBasicBuffer(generator: Function): Float32Array {
-        const float32Array = new Float32Array(AudioGraph.BUFFER_SIZE)
-        for (let i = 0; i < AudioGraph.BUFFER_SIZE; i++) {
-            float32Array[i] = generator()
-        }
-        return float32Array
-    }
 
 }

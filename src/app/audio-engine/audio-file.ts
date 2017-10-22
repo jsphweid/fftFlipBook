@@ -26,12 +26,16 @@ export default class AudioFile {
         return chunkedArr
     }
 
-    makeSignalDataChunked(callback?: Function) {
-        this.signalDataChunked = this.makeNewChunkedArray((arr: Float32Array) => arr)
-        if (callback) callback()
+    public process() {
+        this.makeSignalDataChunked()
+        this.makeSignalDataModifiedChunked()
     }
 
-    makeSignalDataModifiedChunked(callback?: Function) {
+    private makeSignalDataChunked() {
+        this.signalDataChunked = this.makeNewChunkedArray((arr: Float32Array) => arr)
+    }
+
+    private makeSignalDataModifiedChunked() {
         const transform = (arr: Float32Array) => {
             const numToReach: number = arr[0]
             const firstIndex: number = arr.length - this.numToLinearSmooth
@@ -40,7 +44,6 @@ export default class AudioFile {
             return arr
         }
         this.signalDataModifiedChunked = this.makeNewChunkedArray(transform)
-        if (callback) callback()
     }
 
     static spaceValues(startValueInclusive: number, endValueExclusive: number, valuesToFit: number): number[] {

@@ -1,4 +1,5 @@
 import SpecialNode from './audio-buffer-queue'
+import AudioFile from './audio-file'
 
 export default class AudioGraph {
 
@@ -15,21 +16,21 @@ export default class AudioGraph {
             throw new Error('Error: Instantiation failed: Use FileService.getInstance() instead of new.')
         }
         AudioGraph.instance = this
+        this.audioContext = new AudioContext()
     }
 
     public static getInstance(): AudioGraph {
         return this.instance
     }
 
-    private buildNodes(): void {
-        this.audioContext = new AudioContext()
+    private buildNodes(audioFile: AudioFile): void {
         this.sourceNode = this.audioContext.createBufferSource()
         this.gainNode = this.audioContext.createGain()
-        this.specialNode = this.buildSpecialNode()
+        this.specialNode = this.buildSpecialNode(audioFile)
     }
 
-    private buildSpecialNode(): ScriptProcessorNode {
-        const specialNode: SpecialNode = new SpecialNode(this.audioContext)
+    private buildSpecialNode(audioFile: AudioFile): ScriptProcessorNode {
+        const specialNode: SpecialNode = new SpecialNode(this.audioContext, audioFile)
         return specialNode.specialProcessorNode
     }
 
@@ -38,8 +39,8 @@ export default class AudioGraph {
         this.gainNode.connect(this.audioContext.destination)
     }
 
-    public buildGraph(): void {
-        this.buildNodes()
+    public buildGraph(audioFile: AudioFile): void {
+        this.buildNodes(audioFile)
         this.connectNodes()
     }
 

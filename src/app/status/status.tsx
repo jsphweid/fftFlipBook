@@ -1,9 +1,7 @@
 import * as React from 'react'
 
 export interface FileLoaderProps {
-    fileUploaded: boolean
-    chunkArrayCompleted: boolean
-    modifiedChunkArrayCompleted: boolean
+    fileLoadedProcessedGraphBuilt: boolean
 }
 
 interface statusListItem {
@@ -13,14 +11,13 @@ interface statusListItem {
 
 export default class LoadingStatus extends React.Component<FileLoaderProps> {
 
-
-
     render() {
 
         const items: statusListItem[] = [
-            { content: `File has been uploaded.`, completed: this.props.fileUploaded },
-            { content: `Array of chunked up buffers has been created.`, completed: this.props.chunkArrayCompleted },
-            { content: `Array of chunked up buffers -- modified to loop -- has been created`, completed: this.props.modifiedChunkArrayCompleted }
+            {
+                content: `File has been uploaded, processed into chunks and loopable chunks, and graph has been built.`,
+                completed: this.props.fileLoadedProcessedGraphBuilt
+            }
         ]
 
         return (
