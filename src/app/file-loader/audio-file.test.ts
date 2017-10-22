@@ -1,6 +1,5 @@
 import AudioFile from './audio-file'
 import { AudioContext } from 'web-audio-test-api'
-import * as WebAudioTestAPI from 'WebAudioTestAPI'
 
 WebAudioTestAPI.setState({
     'AudioBuffer#copyToChannel': 'enabled',
@@ -31,10 +30,6 @@ describe('Audio File', () => {
         const audioFile: AudioFile = getNewAudioFile(arr, 9999, 9999)
         expect(audioFile.entireBuffer.getChannelData(0)).toEqual(arr)
     })
-
-    // it('should make all the arrays', () => {
-    //
-    // })
 
     it('makeSignalDataChunked should make a chunked array', () => {
         const arr: Float32Array = new Float32Array([0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1])
@@ -90,7 +85,35 @@ describe('Audio File', () => {
         })
     })
 
-    it('should make the correct modified array of arrays when whole class is made', () => {
+    it('should make the correct array of arrays when fn is called', () => {
+        const entireBuffer: Float32Array = new Float32Array(
+            [
+                0, 2, 4, 6, 8,
+                10, 8, 6, 4, 2,
+                0, -2, -4, -6, -8,
+                -10, -8, -6, -4, -2,
+                0, 2, 4, 6, 8,
+                10, 8, 6, 4, 2,
+                0, -2, -4, -6, -8,
+                -10 // it will discard this number
+            ]
+        )
+        const audioFile: AudioFile = getNewAudioFile(entireBuffer, 5, 3)
+        audioFile.makeSignalDataChunked()
+        const expectedData: Float32Array[] = [
+            new Float32Array([0, 2, 4, 6, 8]),
+            new Float32Array([10, 8, 6, 4, 2]),
+            new Float32Array([0, -2, -4, -6, -8]),
+            new Float32Array([-10, -8, -6, -4, -2]),
+            new Float32Array([0, 2, 4, 6, 8]),
+            new Float32Array([10, 8, 6, 4, 2]),
+            new Float32Array([0, -2, -4, -6, -8])
+        ]
+
+        expect(audioFile.signalDataChunked).toEqual(expectedData)
+    })
+
+    it('should make the correct modified array of arrays when fn called', () => {
         const entireBuffer: Float32Array = new Float32Array(
             [
                 0, 2, 4, 6, 8,
