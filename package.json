@@ -30,6 +30,7 @@
     "testRegex": "/src/.*\\.test.(ts|tsx|js)$"
   },
   "devDependencies": {
+    "@types/jest": "^21.1.4",
     "@types/react": "^16.0.13",
     "@types/react-dom": "^16.0.1",
     "@types/webpack": "^3.0.13",
@@ -54,6 +55,7 @@
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "^2.5.3",
     "web-audio-buffer-queue": "^1.0.0",
+    "web-audio-test-api": "^0.5.2",
     "webpack": "^3.8.1",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.2"

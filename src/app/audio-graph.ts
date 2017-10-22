@@ -44,9 +44,8 @@ export default class AudioGraph {
     }
 
     public playBuffer(buffer: AudioBuffer): void {
-        // this.sourceNode.buffer = buffer
-        // this.sourceNode.start()
-
+        this.sourceNode.buffer = buffer
+        this.sourceNode.start()
     }
 
 }
