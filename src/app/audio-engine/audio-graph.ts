@@ -1,15 +1,17 @@
-import SpecialNode from './audio-buffer-queue'
+import AudioBufferQueueNode from './audio-buffer-queue-node'
 import AudioFile from './audio-file'
 
 export default class AudioGraph {
 
     static BUFFER_SIZE: number = 2048
 
+    private bufferIndex: number = 0
+
     private static instance: AudioGraph = new AudioGraph()
-    public sourceNode: AudioBufferSourceNode
     public gainNode: GainNode
     public audioContext: AudioContext
-    public specialNode: AudioNode
+    public specialNode: AudioBufferQueueNode
+    public oscillatorNode: OscillatorNode
 
     constructor() {
         if (AudioGraph.instance) {
@@ -23,30 +25,28 @@ export default class AudioGraph {
         return this.instance
     }
 
-    private buildNodes(audioFile: AudioFile): void {
-        this.sourceNode = this.audioContext.createBufferSource()
+    public buildNodes(audioFile: AudioFile): void {
         this.gainNode = this.audioContext.createGain()
-        this.specialNode = this.buildSpecialNode(audioFile)
+        this.oscillatorNode = this.audioContext.createOscillator()
+        this.specialNode = new AudioBufferQueueNode(this.audioContext, audioFile)
     }
 
-    private buildSpecialNode(audioFile: AudioFile): ScriptProcessorNode {
-        const specialNode: SpecialNode = new SpecialNode(this.audioContext, audioFile)
-        return specialNode.specialProcessorNode
-    }
-
-    private connectNodes(): void {
+    public connectNodes(): void {
         this.specialNode.connect(this.gainNode)
         this.gainNode.connect(this.audioContext.destination)
     }
 
-    public buildGraph(audioFile: AudioFile): void {
-        this.buildNodes(audioFile)
-        this.connectNodes()
+    public switchToOsc(): void {
+        this.specialNode.disconnect()
+        this.oscillatorNode.connect(this.gainNode)
+        this.gainNode.connect(this.audioContext.destination)
+        this.oscillatorNode.start()
     }
 
-    public playBuffer(buffer: AudioBuffer): void {
-        this.sourceNode.buffer = buffer
-        this.sourceNode.start()
+    public updateBufferIndex(increment: number, audioFile: AudioFile): void {
+        this.bufferIndex += increment
+        this.specialNode.setIndex(this.bufferIndex)
+        this.oscillatorNode.setPeriodicWave(audioFile.synthesizedPeriodicWaves[this.bufferIndex])
     }
 
 }

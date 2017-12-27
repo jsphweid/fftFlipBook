@@ -1,3 +1,6 @@
+import FftBatchProcessor, { ComplexArrayType } from './fft-batch-processor'
+import AudioGraph from './audio-graph'
+
 export default class AudioFile {
 
     static CHANNEL: number = 0
@@ -6,6 +9,8 @@ export default class AudioFile {
     entireBuffer: AudioBuffer
     signalDataChunked: Float32Array[] = []
     signalDataModifiedChunked: Float32Array[] = []
+    chunkedFfts: ComplexArrayType[] = []
+    synthesizedPeriodicWaves: PeriodicWave[] = []
 
     constructor(entireBuffer: AudioBuffer, bufferSize: number, numToLinearSmooth: number) {
         this.entireBuffer = entireBuffer
@@ -13,14 +18,14 @@ export default class AudioFile {
         this.numToLinearSmooth = numToLinearSmooth
     }
 
-    makeNewChunkedArray(process: Function) {
+    makeNewChunkedArray(processor: Function) {
         const numberOfChunks: number = Math.floor(this.entireBuffer.length / this.bufferSize)
         const chunkedArr: Float32Array[] = []
 
         for (let i: number = 0; i < numberOfChunks; i++) {
             const arr: Float32Array = new Float32Array(this.bufferSize)
             this.entireBuffer.copyFromChannel(arr, AudioFile.CHANNEL, i * this.bufferSize)
-            chunkedArr.push(process(arr))
+            chunkedArr.push(processor(arr))
         }
 
         return chunkedArr
@@ -29,13 +34,15 @@ export default class AudioFile {
     public process() {
         this.makeSignalDataChunked()
         this.makeSignalDataModifiedChunked()
+        this.makeChunkedFfts()
+        this.makePeriodicWavesFromFfts()
     }
 
-    private makeSignalDataChunked() {
+    makeSignalDataChunked() {
         this.signalDataChunked = this.makeNewChunkedArray((arr: Float32Array) => arr)
     }
 
-    private makeSignalDataModifiedChunked() {
+    makeSignalDataModifiedChunked() {
         const transform = (arr: Float32Array) => {
             const numToReach: number = arr[0]
             const firstIndex: number = arr.length - this.numToLinearSmooth
@@ -44,6 +51,18 @@ export default class AudioFile {
             return arr
         }
         this.signalDataModifiedChunked = this.makeNewChunkedArray(transform)
+    }
+
+    makeChunkedFfts() {
+        this.chunkedFfts = FftBatchProcessor.batchFft(this.signalDataChunked)
+    }
+
+    makePeriodicWavesFromFfts() {
+        const audioContext = AudioGraph.getInstance().audioContext
+        this.chunkedFfts.slice(0, 50).forEach((arr: ComplexArrayType) => {
+            const synthesizedArr: PeriodicWave = audioContext.createPeriodicWave(arr.real, arr.imag, { disableNormalization: true })
+            this.synthesizedPeriodicWaves.push(synthesizedArr)
+        })
     }
 
     static spaceValues(startValueInclusive: number, endValueExclusive: number, valuesToFit: number): number[] {

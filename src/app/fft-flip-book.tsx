@@ -5,6 +5,9 @@ import FlipBook from './flip-book/flip-book'
 import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
 import LoadingStatus from './status/status'
+import Navigation from './navigation/navigation'
+import SpecialNode from './audio-engine/audio-buffer-queue-node'
+import FftBatchProcessor from './audio-engine/fft-batch-processor'
 
 export interface AppProps {
 
@@ -34,9 +37,12 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     handlePlay() {
-        console.log('playing: not implemented yet....')
-        // this.audioGraph.playBuffer(this.audioFile.entireBuffer)
+        this.audioGraph.connectNodes()
         // this.setState({ playDisabled: true })
+    }
+
+    handleSwitchToOsc() {
+        this.audioGraph.switchToOsc()
     }
 
     handleLoadFile() {
@@ -52,8 +58,9 @@ export default class App extends React.Component<AppProps, AppState> {
                 const audioFile = new AudioFile(buffer, AudioGraph.BUFFER_SIZE, 5)
                 this.audioFile = audioFile
                 audioFile.process()
-                this.audioGraph.buildGraph(audioFile)
+                this.audioGraph.buildNodes(audioFile)
                 this.setState({ fileLoadedProcessedGraphBuilt: true })
+
             })
         }
         request.send()
@@ -77,6 +84,10 @@ export default class App extends React.Component<AppProps, AppState> {
                 >Play</button>
                 <LoadingStatus
                     fileLoadedProcessedGraphBuilt={fileLoadedProcessedGraphBuilt}
+                />
+                <Navigation
+                    handleIncrement={(num: number) => AudioGraph.getInstance().updateBufferIndex(num, this.audioFile)}
+                    handleSwitchToOsc={this.handleSwitchToOsc.bind(this)}
                 />
             </div>
         )
