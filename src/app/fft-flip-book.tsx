@@ -4,10 +4,8 @@ import FileLoader from './file-loader/file-loader'
 import FlipBook from './flip-book/flip-book'
 import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
-import LoadingStatus from './status/status'
+import Infos from './infos/infos'
 import Navigation from './navigation/navigation'
-import SpecialNode from './audio-engine/audio-buffer-queue-node'
-import FftBatchProcessor from './audio-engine/fft-batch-processor'
 
 export interface AppProps {
 
@@ -16,11 +14,12 @@ export interface AppProps {
 export interface AppState {
     fileLoadedProcessedGraphBuilt: boolean
     neverEvenTriedToLoadYet: boolean
+    audioGraph: AudioGraph
+    readOnlyBufferIndex: number
 }
 
 export default class App extends React.Component<AppProps, AppState> {
 
-    audioGraph: AudioGraph
     audioFile: AudioFile
 
     constructor(props: AppProps) {
@@ -29,27 +28,36 @@ export default class App extends React.Component<AppProps, AppState> {
 
         this.state = {
             fileLoadedProcessedGraphBuilt: false,
-            neverEvenTriedToLoadYet: true
+            neverEvenTriedToLoadYet: true,
+            audioGraph: null,
+            readOnlyBufferIndex: 0
         }
-
-        this.audioGraph = AudioGraph.getInstance()
 
     }
 
+    componentDidMount() {
+        const audioGraph: AudioGraph = new AudioGraph(this.updateReadOnlyBufferIndex.bind(this))
+        this.setState({ audioGraph })
+    }
+
+    updateReadOnlyBufferIndex(newIndex: number) {
+        this.setState({ readOnlyBufferIndex: newIndex })
+    }
+
     handlePlay() {
-        this.audioGraph.connectNodes()
+        this.state.audioGraph.connectNodes()
         // this.setState({ playDisabled: true })
     }
 
     handleSwitchToOsc() {
-        this.audioGraph.switchToOsc()
+        this.state.audioGraph.switchToOsc()
     }
 
     handleLoadFile() {
 
-        const audioGraphInstance: AudioGraph = AudioGraph.getInstance()
+        const { audioGraph } = this.state
 
-        audioGraphInstance.disconnectAllNodes()
+        audioGraph.disconnectAllNodes()
 
         this.setState({ fileLoadedProcessedGraphBuilt: false })
 
@@ -57,11 +65,11 @@ export default class App extends React.Component<AppProps, AppState> {
         request.open('get', 'http://localhost:3000/song.wav', true)
         request.responseType = 'arraybuffer'
         request.onload = () => {
-            audioGraphInstance.audioContext.decodeAudioData(request.response, (buffer) => {
-                const audioFile = new AudioFile(buffer, AudioGraph.BUFFER_SIZE, 0)
+            audioGraph.audioContext.decodeAudioData(request.response, (buffer) => {
+                const audioFile = new AudioFile(this.state.audioGraph, buffer, AudioGraph.BUFFER_SIZE, 0)
                 this.audioFile = audioFile
                 audioFile.process()
-                this.audioGraph.buildNodes(audioFile)
+                audioGraph.buildNodes(audioFile)
                 this.setState({ fileLoadedProcessedGraphBuilt: true })
 
             })
@@ -71,7 +79,15 @@ export default class App extends React.Component<AppProps, AppState> {
 
     render() {
 
-        const { fileLoadedProcessedGraphBuilt, neverEvenTriedToLoadYet } = this.state
+        const { fileLoadedProcessedGraphBuilt, neverEvenTriedToLoadYet, audioGraph } = this.state
+
+        if (!audioGraph) {
+            return (
+                <div>
+                    loading audio graph
+                </div>
+            )
+        }
 
         return (
             <div>
@@ -85,11 +101,12 @@ export default class App extends React.Component<AppProps, AppState> {
                     disabled={!fileLoadedProcessedGraphBuilt}
                     onClick={this.handlePlay.bind(this)}
                 >Play</button>
-                <LoadingStatus
+                <Infos
                     fileLoadedProcessedGraphBuilt={fileLoadedProcessedGraphBuilt}
+                    bufferIndex={this.state.readOnlyBufferIndex}
                 />
                 <Navigation
-                    handleIncrement={(num: number) => AudioGraph.getInstance().updateBufferIndex(num, this.audioFile)}
+                    handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     handleSwitchToOsc={this.handleSwitchToOsc.bind(this)}
                 />
             </div>

@@ -11,8 +11,10 @@ export default class AudioFile {
     signalDataModifiedChunked: Float32Array[] = []
     chunkedFfts: ComplexArrayType[] = []
     synthesizedPeriodicWaves: PeriodicWave[] = []
+    audioGraph: AudioGraph
 
-    constructor(entireBuffer: AudioBuffer, bufferSize: number, numToLinearSmooth: number) {
+    constructor(audioGraph: AudioGraph, entireBuffer: AudioBuffer, bufferSize: number, numToLinearSmooth: number) {
+        this.audioGraph = audioGraph
         this.entireFileAsAudioBuffer = entireBuffer
         this.bufferSize = bufferSize
         this.numToLinearSmooth = numToLinearSmooth
@@ -58,9 +60,8 @@ export default class AudioFile {
     }
 
     makePeriodicWavesFromFfts() {
-        const audioContext = AudioGraph.getInstance().audioContext
-        this.chunkedFfts.slice(0, 50).forEach((arr: ComplexArrayType) => {
-            const synthesizedArr: PeriodicWave = audioContext.createPeriodicWave(arr.real, arr.imag, { disableNormalization: true })
+        this.chunkedFfts.forEach((arr: ComplexArrayType) => {
+            const synthesizedArr: PeriodicWave = this.audioGraph.audioContext.createPeriodicWave(arr.real, arr.imag, { disableNormalization: true })
             this.synthesizedPeriodicWaves.push(synthesizedArr)
         })
     }

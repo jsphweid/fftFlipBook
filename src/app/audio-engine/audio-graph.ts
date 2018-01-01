@@ -3,33 +3,27 @@ import AudioFile from './audio-file'
 
 export default class AudioGraph {
 
-    static BUFFER_SIZE: number = 2048
+    public static BUFFER_SIZE: number = 2048
 
     private bufferIndex: number = 0
 
-    private static instance: AudioGraph = new AudioGraph()
     public audioContext: AudioContext
 
     public gainNode: GainNode
     public specialNode: AudioBufferQueueNode
     public oscillatorNode: OscillatorNode
 
-    constructor() {
-        if (AudioGraph.instance) {
-            throw new Error('Error: Instantiation failed: Use FileService.getInstance() instead of new.')
-        }
-        AudioGraph.instance = this
-        this.audioContext = new AudioContext()
-    }
+    private distributeNewBufferIndex: (newIndex: number) => void
 
-    public static getInstance(): AudioGraph {
-        return this.instance
+    constructor(distributeNewBufferIndex: (newIndex: number) => void) {
+        this.audioContext = new AudioContext()
+        this.distributeNewBufferIndex = distributeNewBufferIndex
     }
 
     public buildNodes(audioFile: AudioFile): void {
         this.gainNode = this.audioContext.createGain()
         this.oscillatorNode = this.audioContext.createOscillator()
-        this.specialNode = new AudioBufferQueueNode(this.audioContext, audioFile)
+        this.specialNode = new AudioBufferQueueNode(this, audioFile)
     }
 
     public connectNodes(): void {
@@ -52,8 +46,12 @@ export default class AudioGraph {
 
     public updateBufferIndex(increment: number, audioFile: AudioFile): void {
         this.bufferIndex += increment
-        this.specialNode.setIndex(this.bufferIndex)
         this.oscillatorNode.setPeriodicWave(audioFile.synthesizedPeriodicWaves[this.bufferIndex])
+        this.distributeNewBufferIndex(this.bufferIndex)
+    }
+
+    public getBufferIndex(): number {
+        return this.bufferIndex
     }
 
 }

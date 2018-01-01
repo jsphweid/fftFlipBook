@@ -12,6 +12,7 @@ describe('Audio File', () => {
     const MONO = 1
     const STEREO = 2
     const SAMPLING_RATE = 44100
+    const audioGraph = null
 
     beforeEach(() => {
         audioContext = new AudioContext()
@@ -22,7 +23,7 @@ describe('Audio File', () => {
     const getNewAudioFile = (entireAudioBufferArr: Float32Array, bufferSize: number, numToLinearSmooth: number): AudioFile => {
         const audioBuffer: AudioBuffer = audioContext.createBuffer(MONO, entireAudioBufferArr.length, SAMPLING_RATE)
         audioBuffer.copyToChannel(entireAudioBufferArr, 0, 0)
-        return new AudioFile(audioBuffer, bufferSize, numToLinearSmooth)
+        return new AudioFile(audioGraph, audioBuffer, bufferSize, numToLinearSmooth)
     }
 
     it('should set entire audio file to a giant buffer on the class when it is created in mono', () => {
