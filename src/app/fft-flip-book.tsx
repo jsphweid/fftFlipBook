@@ -6,16 +6,17 @@ import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
 import Infos from './infos/infos'
 import Navigation from './navigation/navigation'
+import { AudioFileStatus, AudioGraphStatus } from './common/types'
 
 export interface AppProps {
 
 }
 
 export interface AppState {
-    fileLoadedProcessedGraphBuilt: boolean
-    neverEvenTriedToLoadYet: boolean
     audioGraph: AudioGraph
     readOnlyBufferIndex: number
+    audioFileStatus: AudioFileStatus
+    audioGraphStatus: AudioGraphStatus
 }
 
 export default class App extends React.Component<AppProps, AppState> {
@@ -27,10 +28,10 @@ export default class App extends React.Component<AppProps, AppState> {
         super(props)
 
         this.state = {
-            fileLoadedProcessedGraphBuilt: false,
-            neverEvenTriedToLoadYet: true,
             audioGraph: null,
-            readOnlyBufferIndex: 0
+            readOnlyBufferIndex: 0,
+            audioFileStatus: AudioFileStatus.Uninitiated,
+            audioGraphStatus: AudioGraphStatus.Disconnected
         }
 
     }
@@ -44,9 +45,13 @@ export default class App extends React.Component<AppProps, AppState> {
         this.setState({ readOnlyBufferIndex: newIndex })
     }
 
-    handlePlay() {
-        this.state.audioGraph.connectNodes()
-        // this.setState({ playDisabled: true })
+    handleTogglePlay() {
+        switch (this.state.audioGraphStatus) {
+            case AudioGraphStatus.Disconnected:
+                return this.setState({ audioGraphStatus: this.state.audioGraph.connectNodes() })
+            case AudioGraphStatus.Connected:
+                return this.setState({ audioGraphStatus: this.state.audioGraph.disconnectAllNodes() })
+        }
     }
 
     handleSwitchToOsc() {
@@ -55,11 +60,11 @@ export default class App extends React.Component<AppProps, AppState> {
 
     handleLoadFile() {
 
+        this.setState({ audioFileStatus: AudioFileStatus.Loading })
+
         const { audioGraph } = this.state
 
         audioGraph.disconnectAllNodes()
-
-        this.setState({ fileLoadedProcessedGraphBuilt: false })
 
         const request = new XMLHttpRequest()
         request.open('get', 'http://localhost:3000/song.wav', true)
@@ -70,7 +75,7 @@ export default class App extends React.Component<AppProps, AppState> {
                 this.audioFile = audioFile
                 audioFile.process()
                 audioGraph.buildNodes(audioFile)
-                this.setState({ fileLoadedProcessedGraphBuilt: true })
+                this.setState({ audioFileStatus: AudioFileStatus.Ready })
 
             })
         }
@@ -79,7 +84,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
     render() {
 
-        const { fileLoadedProcessedGraphBuilt, neverEvenTriedToLoadYet, audioGraph } = this.state
+        const { audioGraph } = this.state
 
         if (!audioGraph) {
             return (
@@ -93,21 +98,18 @@ export default class App extends React.Component<AppProps, AppState> {
             <div>
                 <Settings/>
                 <FileLoader
-                    canLoadFile={neverEvenTriedToLoadYet || fileLoadedProcessedGraphBuilt}
+                    canLoadFile={audioGraph !== null && this.state.audioFileStatus !== AudioFileStatus.Loading}
                     handleLoadFile={this.handleLoadFile.bind(this)}
                 />
                 <FlipBook/>
-                <button
-                    disabled={!fileLoadedProcessedGraphBuilt}
-                    onClick={this.handlePlay.bind(this)}
-                >Play</button>
                 <Infos
-                    fileLoadedProcessedGraphBuilt={fileLoadedProcessedGraphBuilt}
                     bufferIndex={this.state.readOnlyBufferIndex}
                 />
                 <Navigation
+                    status={this.state.audioFileStatus}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     handleSwitchToOsc={this.handleSwitchToOsc.bind(this)}
+                    togglePlay={this.handleTogglePlay.bind(this)}
                 />
             </div>
         )

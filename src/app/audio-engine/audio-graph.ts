@@ -1,5 +1,6 @@
 import AudioBufferQueueNode from './audio-buffer-queue-node'
 import AudioFile from './audio-file'
+import { AudioGraphStatus } from '../common/types'
 
 export default class AudioGraph {
 
@@ -26,15 +27,17 @@ export default class AudioGraph {
         this.specialNode = new AudioBufferQueueNode(this, audioFile)
     }
 
-    public connectNodes(): void {
+    public connectNodes(): AudioGraphStatus {
         this.specialNode.connect(this.gainNode)
         this.gainNode.connect(this.audioContext.destination)
+        return AudioGraphStatus.Connected
     }
 
-    public disconnectAllNodes(): void {
+    public disconnectAllNodes(): AudioGraphStatus {
         if (this.gainNode) this.gainNode.disconnect()
         if (this.specialNode) this.specialNode.disconnect()
         if (this.oscillatorNode) this.oscillatorNode.disconnect()
+        return AudioGraphStatus.Disconnected
     }
 
     public switchToOsc(): void {
