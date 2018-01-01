@@ -46,7 +46,10 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     handleLoadFile() {
-        // make sure npm run temp is running
+
+        const audioGraphInstance: AudioGraph = AudioGraph.getInstance()
+
+        audioGraphInstance.disconnectAllNodes()
 
         this.setState({ fileLoadedProcessedGraphBuilt: false })
 
@@ -54,8 +57,8 @@ export default class App extends React.Component<AppProps, AppState> {
         request.open('get', 'http://localhost:3000/song.wav', true)
         request.responseType = 'arraybuffer'
         request.onload = () => {
-            AudioGraph.getInstance().audioContext.decodeAudioData(request.response, (buffer) => {
-                const audioFile = new AudioFile(buffer, AudioGraph.BUFFER_SIZE, 5)
+            audioGraphInstance.audioContext.decodeAudioData(request.response, (buffer) => {
+                const audioFile = new AudioFile(buffer, AudioGraph.BUFFER_SIZE, 0)
                 this.audioFile = audioFile
                 audioFile.process()
                 this.audioGraph.buildNodes(audioFile)

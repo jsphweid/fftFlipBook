@@ -6,25 +6,25 @@ export default class AudioFile {
     static CHANNEL: number = 0
     numToLinearSmooth: number
     bufferSize: number
-    entireBuffer: AudioBuffer
+    entireFileAsAudioBuffer: AudioBuffer
     signalDataChunked: Float32Array[] = []
     signalDataModifiedChunked: Float32Array[] = []
     chunkedFfts: ComplexArrayType[] = []
     synthesizedPeriodicWaves: PeriodicWave[] = []
 
     constructor(entireBuffer: AudioBuffer, bufferSize: number, numToLinearSmooth: number) {
-        this.entireBuffer = entireBuffer
+        this.entireFileAsAudioBuffer = entireBuffer
         this.bufferSize = bufferSize
         this.numToLinearSmooth = numToLinearSmooth
     }
 
     makeNewChunkedArray(processor: Function) {
-        const numberOfChunks: number = Math.floor(this.entireBuffer.length / this.bufferSize)
+        const numberOfChunks: number = Math.floor(this.entireFileAsAudioBuffer.length / this.bufferSize)
         const chunkedArr: Float32Array[] = []
 
-        for (let i: number = 0; i < numberOfChunks; i++) {
+        for (let i = 0; i < numberOfChunks; i++) {
             const arr: Float32Array = new Float32Array(this.bufferSize)
-            this.entireBuffer.copyFromChannel(arr, AudioFile.CHANNEL, i * this.bufferSize)
+            this.entireFileAsAudioBuffer.copyFromChannel(arr, AudioFile.CHANNEL, i * this.bufferSize)
             chunkedArr.push(processor(arr))
         }
 

@@ -15,8 +15,8 @@ export default class AudioBufferQueueNode {
             const out: AudioBuffer = e.outputBuffer
             // const chunk: Float32Array = audioFile.signalDataChunked[50]
             const chunk: Float32Array = audioFile.signalDataModifiedChunked[this.index]
-            // this.index++
-            // console.log(this.index)
+            this.index++
+            console.log(this.index)
             // if (this.index > 50) this.index = 30 // reset
             out.copyToChannel(chunk, 0)
         })

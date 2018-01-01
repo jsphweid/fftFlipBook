@@ -8,8 +8,9 @@ export default class AudioGraph {
     private bufferIndex: number = 0
 
     private static instance: AudioGraph = new AudioGraph()
-    public gainNode: GainNode
     public audioContext: AudioContext
+
+    public gainNode: GainNode
     public specialNode: AudioBufferQueueNode
     public oscillatorNode: OscillatorNode
 
@@ -34,6 +35,12 @@ export default class AudioGraph {
     public connectNodes(): void {
         this.specialNode.connect(this.gainNode)
         this.gainNode.connect(this.audioContext.destination)
+    }
+
+    public disconnectAllNodes(): void {
+        if (this.gainNode) this.gainNode.disconnect()
+        if (this.specialNode) this.specialNode.disconnect()
+        if (this.oscillatorNode) this.oscillatorNode.disconnect()
     }
 
     public switchToOsc(): void {

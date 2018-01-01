@@ -16,7 +16,7 @@ A flip book to explore the FFTs of audio visually.
  - UI looks a lot better...
 
 ### Nice features to have
- - stereo
+ - stereo (process both channels, but an easier idea would be to simply mix them down first as an MVP)
  - a way to keep previous files in the queue... If you uploaded a file and it has already processed,
     why not keep a few of the last ones in memory?. You can make an object that can represent 'this done', 'that done' and it can be a todo list
  - re-enable tests...? Why is it so hard for testing libraries to be okay with classes that have anything other than static methods in them...

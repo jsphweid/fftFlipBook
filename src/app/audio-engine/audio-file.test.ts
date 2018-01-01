@@ -28,7 +28,7 @@ describe('Audio File', () => {
     it('should set entire audio file to a giant buffer on the class when it is created in mono', () => {
         const arr: Float32Array = new Float32Array([0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1])
         const audioFile: AudioFile = getNewAudioFile(arr, 9999, 9999)
-        expect(audioFile.entireBuffer.getChannelData(0)).toEqual(arr)
+        expect(audioFile.entireFileAsAudioBuffer.getChannelData(0)).toEqual(arr)
     })
 
     it('makeSignalDataChunked should make a chunked array', () => {
