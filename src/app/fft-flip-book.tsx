@@ -51,7 +51,7 @@ export default class App extends React.Component<AppProps, AppState> {
         this.setState({ fileLoadedProcessedGraphBuilt: false })
 
         const request = new XMLHttpRequest()
-        request.open('get', 'http://localhost:8080/song.wav', true)
+        request.open('get', 'http://localhost:3000/song.wav', true)
         request.responseType = 'arraybuffer'
         request.onload = () => {
             AudioGraph.getInstance().audioContext.decodeAudioData(request.response, (buffer) => {

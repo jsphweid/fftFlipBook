@@ -16,7 +16,8 @@ module.exports = {
     devServer: {
         hot: true,
         port: 3000,
-        historyApiFallback: true
+        historyApiFallback: true,
+        contentBase: [path.resolve(__dirname, 'wavs')]
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"]

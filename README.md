@@ -1,6 +1,14 @@
 # fftFlipBook
 A flip book to explore the FFTs of audio visually.
 
+### DEVELOP
+
+#### Dependencies:
+     - http-server `npm install http-server -g`
+
+#### Run
+`npm run start`
+
 ### MVP
  - can play audio... start, loop, stop
  - produces fft image with what is currently in buffer
