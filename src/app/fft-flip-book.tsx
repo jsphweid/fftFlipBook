@@ -54,10 +54,6 @@ export default class App extends React.Component<AppProps, AppState> {
         }
     }
 
-    handleSwitchToOsc() {
-        this.state.audioGraph.switchToOsc()
-    }
-
     handleLoadFile() {
 
         this.setState({ audioFileStatus: AudioFileStatus.Loading })
@@ -108,8 +104,10 @@ export default class App extends React.Component<AppProps, AppState> {
                 <Navigation
                     status={this.state.audioFileStatus}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
-                    handleSwitchToOsc={this.handleSwitchToOsc.bind(this)}
+                    handleSwitchToOsc={() => this.state.audioGraph.switchToOsc()}
                     togglePlay={this.handleTogglePlay.bind(this)}
+                    isLooping={this.state.audioGraph.getIsLooping()}
+                    toggleIsLooping={() => this.state.audioGraph.toggleIsLooping()}
                 />
             </div>
         )

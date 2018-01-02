@@ -6,6 +6,8 @@ export interface NavigationProps {
     handleIncrement: (num: number) => void
     handleSwitchToOsc: () => void
     togglePlay: () => void
+    isLooping: boolean
+    toggleIsLooping: () => void
 }
 
 // TODO: convert to STC?
@@ -19,8 +21,8 @@ export default class Navigation extends React.Component<NavigationProps> {
                 <button onClick={() => this.props.togglePlay()}>Play/Pause</button>
                 <button onClick={() => this.props.handleIncrement(1)}>+1</button>
                 <button onClick={() => this.props.handleIncrement(10)}>+10</button>
-                <button onClick={this.props.handleSwitchToOsc}
-                >Switch to Osc</button>
+                <button onClick={this.props.handleSwitchToOsc}>Switch to Osc</button>
+                <button onClick={() => this.props.toggleIsLooping()}>{this.props.isLooping ? 'Play Normal' : 'Loop'}</button>
             </div>
         )
     }
