@@ -3,16 +3,16 @@ import AudioGraph from './audio-graph'
 
 export default class AudioFile {
 
-    // TODO: private members?
     static CHANNEL: number = 0
-    numToLinearSmooth: number
-    bufferSize: number
-    entireFileAsAudioBuffer: AudioBuffer
-    signalDataChunked: Float32Array[] = []
-    signalDataModifiedChunked: Float32Array[] = []
-    chunkedFfts: ComplexArrayType[] = []
-    audioGraph: AudioGraph
-    numFullBuffers: number
+    private numToLinearSmooth: number
+    private bufferSize: number
+    private entireFileAsAudioBuffer: AudioBuffer
+    private signalDataChunked: Float32Array[] = []
+    private chunkedFfts: ComplexArrayType[] = []
+    private audioGraph: AudioGraph
+
+    public signalDataModifiedChunked: Float32Array[] = []
+    public numFullBuffers: number
 
     constructor(audioGraph: AudioGraph, entireBuffer: AudioBuffer, bufferSize: number, numToLinearSmooth: number) {
         this.audioGraph = audioGraph

@@ -10,39 +10,33 @@ export interface NavigationProps {
     bufferIndex: number
 }
 
-// TODO: convert to STC?
-export default class Navigation extends React.Component<NavigationProps> {
+const Navigation: React.SFC<NavigationProps> = (props: NavigationProps) => {
 
-    renderButtons() {
-        console.log('rerender', this.props.isLooping)
-        return (
-            <div className="ffb-navigation-info">
-                <div className="ffb-navigation-info-info">
-                    <span>{this.props.bufferIndex}</span>
-                </div>
-                <div className="ffb-navigation-info-navigation">
-                    <button onClick={() => this.props.handleIncrement(-10)}>-10</button>
-                    <button onClick={() => this.props.handleIncrement(-1)}>-1</button>
-                    <button onClick={() => this.props.togglePlay()}>Play/Pause</button>
-                    <button onClick={() => this.props.handleIncrement(1)}>+1</button>
-                    <button onClick={() => this.props.handleIncrement(10)}>+10</button>
-                    <button onClick={() => this.props.toggleIsLooping()}>{this.props.isLooping ? 'Play Normal' : 'Loop'}</button>
-                </div>
+    const renderButtons = (): JSX.Element => (
+        <div className="ffb-navigation-info">
+            <div className="ffb-navigation-info-info">
+                <span>{props.bufferIndex}</span>
             </div>
-        )
-    }
+            <div className="ffb-navigation-info-navigation">
+                <button onClick={() => props.handleIncrement(-10)}>-10</button>
+                <button onClick={() => props.handleIncrement(-1)}>-1</button>
+                <button onClick={() => props.togglePlay()}>Play/Pause</button>
+                <button onClick={() => props.handleIncrement(1)}>+1</button>
+                <button onClick={() => props.handleIncrement(10)}>+10</button>
+                <button onClick={() => props.toggleIsLooping()}>{props.isLooping ? 'Play Normal' : 'Loop'}</button>
+            </div>
+        </div>
+    )
 
-    render() {
-
-        switch (this.props.status) {
-            case AudioFileStatus.Uninitiated:
-                return <div>Click load...</div>
-            case AudioFileStatus.Loading:
-                return <div>Loading...</div>
-            case AudioFileStatus.Ready:
-                return this.renderButtons()
-        }
-
+    switch (props.status) {
+        case AudioFileStatus.Uninitiated:
+            return <div>Click load...</div>
+        case AudioFileStatus.Loading:
+            return <div>Loading...</div>
+        case AudioFileStatus.Ready:
+            return renderButtons()
     }
 
 }
+
+export default Navigation
