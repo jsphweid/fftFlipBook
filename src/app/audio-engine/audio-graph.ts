@@ -41,16 +41,10 @@ export default class AudioGraph {
         return AudioGraphStatus.Disconnected
     }
 
-    public switchToOsc(): void {
-        this.specialNode.disconnect()
-        this.oscillatorNode.connect(this.gainNode)
-        this.gainNode.connect(this.audioContext.destination)
-        this.oscillatorNode.start()
-    }
-
     public updateBufferIndex(increment: number, audioFile: AudioFile): void {
         this.bufferIndex += increment
-        this.oscillatorNode.setPeriodicWave(audioFile.synthesizedPeriodicWaves[this.bufferIndex])
+        if (this.bufferIndex < 0) this.bufferIndex = 0
+        if (this.bufferIndex >= audioFile.numFullBuffers) this.disconnectAllNodes()
         this.distributeNewBufferIndex(this.bufferIndex)
     }
 

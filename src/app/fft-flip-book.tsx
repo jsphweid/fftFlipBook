@@ -4,8 +4,7 @@ import FileLoader from './file-loader/file-loader'
 import FlipBook from './flip-book/flip-book'
 import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
-import Infos from './infos/infos'
-import Navigation from './navigation/navigation'
+import NavigationAndInfo from './navigation-and-info/navigation-and-info'
 import { AudioFileStatus, AudioGraphStatus } from './common/types'
 
 export interface AppProps {
@@ -98,13 +97,10 @@ export default class App extends React.Component<AppProps, AppState> {
                     handleLoadFile={this.handleLoadFile.bind(this)}
                 />
                 <FlipBook/>
-                <Infos
+                <NavigationAndInfo
                     bufferIndex={this.state.readOnlyBufferIndex}
-                />
-                <Navigation
                     status={this.state.audioFileStatus}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
-                    handleSwitchToOsc={() => this.state.audioGraph.switchToOsc()}
                     togglePlay={this.handleTogglePlay.bind(this)}
                     isLooping={this.state.audioGraph.getIsLooping()}
                     toggleIsLooping={() => this.state.audioGraph.toggleIsLooping()}

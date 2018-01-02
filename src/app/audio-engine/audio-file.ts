@@ -3,6 +3,7 @@ import AudioGraph from './audio-graph'
 
 export default class AudioFile {
 
+    // TODO: private members?
     static CHANNEL: number = 0
     numToLinearSmooth: number
     bufferSize: number
@@ -10,21 +11,21 @@ export default class AudioFile {
     signalDataChunked: Float32Array[] = []
     signalDataModifiedChunked: Float32Array[] = []
     chunkedFfts: ComplexArrayType[] = []
-    synthesizedPeriodicWaves: PeriodicWave[] = []
     audioGraph: AudioGraph
+    numFullBuffers: number
 
     constructor(audioGraph: AudioGraph, entireBuffer: AudioBuffer, bufferSize: number, numToLinearSmooth: number) {
         this.audioGraph = audioGraph
         this.entireFileAsAudioBuffer = entireBuffer
         this.bufferSize = bufferSize
         this.numToLinearSmooth = numToLinearSmooth
+        this.numFullBuffers = Math.floor(entireBuffer.length / this.bufferSize) 
     }
 
     makeNewChunkedArray(processor: Function) {
-        const numberOfChunks: number = Math.floor(this.entireFileAsAudioBuffer.length / this.bufferSize)
         const chunkedArr: Float32Array[] = []
 
-        for (let i = 0; i < numberOfChunks; i++) {
+        for (let i = 0; i < this.numFullBuffers; i++) {
             const arr: Float32Array = new Float32Array(this.bufferSize)
             this.entireFileAsAudioBuffer.copyFromChannel(arr, AudioFile.CHANNEL, i * this.bufferSize)
             chunkedArr.push(processor(arr))
@@ -37,7 +38,6 @@ export default class AudioFile {
         this.makeSignalDataChunked()
         this.makeSignalDataModifiedChunked()
         this.makeChunkedFfts()
-        this.makePeriodicWavesFromFfts()
     }
 
     makeSignalDataChunked() {
@@ -57,13 +57,6 @@ export default class AudioFile {
 
     makeChunkedFfts() {
         this.chunkedFfts = FftBatchProcessor.batchFft(this.signalDataChunked)
-    }
-
-    makePeriodicWavesFromFfts() {
-        this.chunkedFfts.forEach((arr: ComplexArrayType) => {
-            const synthesizedArr: PeriodicWave = this.audioGraph.audioContext.createPeriodicWave(arr.real, arr.imag, { disableNormalization: true })
-            this.synthesizedPeriodicWaves.push(synthesizedArr)
-        })
     }
 
     static spaceValues(startValueInclusive: number, endValueExclusive: number, valuesToFit: number): number[] {
