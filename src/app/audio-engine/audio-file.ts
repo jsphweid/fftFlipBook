@@ -1,4 +1,4 @@
-import FftBatchProcessor, { ComplexArrayType } from './fft-batch-processor'
+import FftBatchProcessor from './fft-batch-processor'
 import AudioGraph from './audio-graph'
 
 export default class AudioFile {
@@ -8,9 +8,9 @@ export default class AudioFile {
     private bufferSize: number
     private entireFileAsAudioBuffer: AudioBuffer
     private signalDataChunked: Float32Array[] = []
-    private chunkedFfts: ComplexArrayType[] = []
     private audioGraph: AudioGraph
 
+    public chunkedFfts: Float32Array[] = []
     public signalDataModifiedChunked: Float32Array[] = []
     public numFullBuffers: number
 

@@ -7,6 +7,7 @@ import AudioGraph from './audio-engine/audio-graph'
 import NavigationAndInfo from './navigation-and-info/navigation-and-info'
 import { AudioFileStatus, AudioGraphStatus } from './common/types'
 
+
 export interface AppProps {
 
 }
@@ -77,9 +78,16 @@ export default class App extends React.Component<AppProps, AppState> {
         request.send()
     }
 
+    renderFlipBook() {
+        if (!this.audioFile) return null
+        return (
+            <FlipBook spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]} />
+        )
+    }
+
     render() {
 
-        const { audioGraph } = this.state
+        const { audioGraph, readOnlyBufferIndex, audioFileStatus } = this.state
 
         if (!audioGraph) {
             return (
@@ -93,17 +101,17 @@ export default class App extends React.Component<AppProps, AppState> {
             <div>
                 <Settings/>
                 <FileLoader
-                    canLoadFile={audioGraph !== null && this.state.audioFileStatus !== AudioFileStatus.Loading}
+                    canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
                     handleLoadFile={this.handleLoadFile.bind(this)}
                 />
-                <FlipBook/>
+                {this.renderFlipBook()}
                 <NavigationAndInfo
-                    bufferIndex={this.state.readOnlyBufferIndex}
-                    status={this.state.audioFileStatus}
+                    bufferIndex={readOnlyBufferIndex}
+                    status={audioFileStatus}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     togglePlay={this.handleTogglePlay.bind(this)}
-                    isLooping={this.state.audioGraph.getIsLooping()}
-                    toggleIsLooping={() => this.state.audioGraph.toggleIsLooping()}
+                    isLooping={audioGraph.getIsLooping()}
+                    toggleIsLooping={() => audioGraph.toggleIsLooping()}
                 />
             </div>
         )

@@ -1,15 +1,20 @@
 import * as React from 'react'
+import { Stage, Layer } from 'react-konva'
 
-export default class FlipBook extends React.Component<any> {
+export interface FlipBookProps {
+    spectrum: Float32Array
+}
 
-    render() {
+const FlipBook: React.SFC<FlipBookProps> = (props: FlipBookProps) => {
 
-        return (
-            <div>
-                hi
-            </div>
-        )
-
-    }
+    return (
+        <Stage width={window.innerWidth} height={window.innerHeight}>
+            <Layer>
+                {/*<FlipBook spectrum={this.audioFile.chunkedFfts[audioGraph.getBufferIndex()]} />*/}
+            </Layer>
+        </Stage>
+    )
 
 }
+
+export default FlipBook
