@@ -29,6 +29,7 @@ const Navigation: React.SFC<NavigationProps> = (props: NavigationProps) => {
     )
 
     switch (props.status) {
+        default:
         case AudioFileStatus.Uninitiated:
             return <div>Click load...</div>
         case AudioFileStatus.Loading:

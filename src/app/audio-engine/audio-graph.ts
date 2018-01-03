@@ -34,6 +34,11 @@ export default class AudioGraph {
         return AudioGraphStatus.Connected
     }
 
+    public resetGraphToDefaultState(): AudioGraphStatus {
+        this.bufferIndex = 0
+        return this.disconnectAllNodes()
+    }
+
     public disconnectAllNodes(): AudioGraphStatus {
         if (this.gainNode) this.gainNode.disconnect()
         if (this.specialNode) this.specialNode.disconnect()

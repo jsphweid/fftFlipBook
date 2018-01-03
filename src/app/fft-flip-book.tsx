@@ -41,11 +41,11 @@ export default class App extends React.Component<AppProps, AppState> {
         this.setState({ audioGraph })
     }
 
-    updateReadOnlyBufferIndex(newIndex: number) {
+    updateReadOnlyBufferIndex(newIndex: number): void {
         this.setState({ readOnlyBufferIndex: newIndex })
     }
 
-    handleTogglePlay() {
+    handleTogglePlay(): void {
         switch (this.state.audioGraphStatus) {
             case AudioGraphStatus.Disconnected:
                 return this.setState({ audioGraphStatus: this.state.audioGraph.connectNodes() })
@@ -54,13 +54,14 @@ export default class App extends React.Component<AppProps, AppState> {
         }
     }
 
-    handleLoadFile() {
+    handleLoadFile(): void {
 
         this.setState({ audioFileStatus: AudioFileStatus.Loading })
 
         const { audioGraph } = this.state
 
-        audioGraph.disconnectAllNodes()
+        this.updateReadOnlyBufferIndex(0)
+        this.state.audioGraph.resetGraphToDefaultState()
 
         const request = new XMLHttpRequest()
         request.open('get', 'http://localhost:3000/song.wav', true)
@@ -78,7 +79,7 @@ export default class App extends React.Component<AppProps, AppState> {
         request.send()
     }
 
-    renderFlipBook() {
+    renderFlipBook(): JSX.Element {
         if (!this.audioFile) return null
         return (
             <FlipBook spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]} />
