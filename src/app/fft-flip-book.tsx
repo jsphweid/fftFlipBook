@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Settings from './settings/settings'
 import FileLoader from './file-loader/file-loader'
 import Visualization from './visualization/visualization'
 import AudioFile from './audio-engine/audio-file'
@@ -107,7 +106,6 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
 
         return (
             <div>
-                <Settings/>
                 <FileLoader
                     canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
                     handleLoadFile={this.handleLoadFile.bind(this)}
