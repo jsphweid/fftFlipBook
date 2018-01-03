@@ -54,14 +54,17 @@ export default class App extends React.Component<AppProps, AppState> {
         }
     }
 
-    handleLoadFile(): void {
-
-        this.setState({ audioFileStatus: AudioFileStatus.Loading })
-
-        const { audioGraph } = this.state
-
+    handleResetGraphToDefaultState(): void {
         this.updateReadOnlyBufferIndex(0)
         this.state.audioGraph.resetGraphToDefaultState()
+        this.setState({ audioGraphStatus: AudioGraphStatus.Disconnected })
+    }
+
+    handleLoadFile(): void {
+        this.setState({ audioFileStatus: AudioFileStatus.Loading })
+        const { audioGraph } = this.state
+
+        this.handleResetGraphToDefaultState()
 
         const request = new XMLHttpRequest()
         request.open('get', 'http://localhost:3000/song.wav', true)
@@ -108,7 +111,8 @@ export default class App extends React.Component<AppProps, AppState> {
                 {this.renderFlipBook()}
                 <NavigationAndInfo
                     bufferIndex={readOnlyBufferIndex}
-                    status={audioFileStatus}
+                    audioFileStatus={audioFileStatus}
+                    audioGraphStatus={this.state.audioGraphStatus}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     togglePlay={this.handleTogglePlay.bind(this)}
                     isLooping={audioGraph.getIsLooping()}
