@@ -47,9 +47,9 @@ export default class AudioGraph {
     }
 
     public updateBufferIndex(increment: number, audioFile: AudioFile): void {
-        this.bufferIndex += increment
         if (this.bufferIndex < 0) this.bufferIndex = 0
-        if (this.bufferIndex >= audioFile.numFullBuffers) this.disconnectAllNodes()
+        if (this.bufferIndex + 1 >= audioFile.numFullBuffers) this.disconnectAllNodes()
+        this.bufferIndex += increment
         this.distributeNewBufferIndex(this.bufferIndex)
     }
 

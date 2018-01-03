@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Settings from './settings/settings'
 import FileLoader from './file-loader/file-loader'
-import FlipBook from './flip-book/flip-book'
+import Visualization from './visualization/visualization'
 import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
 import NavigationAndInfo from './navigation-and-info/navigation-and-info'
@@ -82,10 +82,10 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         request.send()
     }
 
-    renderFlipBook(): JSX.Element {
+    renderVisualization(): JSX.Element {
         if (!this.audioFile) return null
         return (
-            <FlipBook
+            <Visualization
                 spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]}
                 width={this.props.width}
                 height={this.props.height}
@@ -112,7 +112,7 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
                     canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
                     handleLoadFile={this.handleLoadFile.bind(this)}
                 />
-                {this.renderFlipBook()}
+                {this.renderVisualization()}
                 <NavigationAndInfo
                     bufferIndex={readOnlyBufferIndex}
                     audioFileStatus={audioFileStatus}
