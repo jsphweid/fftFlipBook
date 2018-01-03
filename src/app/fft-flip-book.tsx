@@ -1,28 +1,29 @@
 import * as React from 'react'
-import Settings from './settings/settings'
 import FileLoader from './file-loader/file-loader'
-import FlipBook from './flip-book/flip-book'
+import Visualization from './visualization/visualization'
 import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
 import NavigationAndInfo from './navigation-and-info/navigation-and-info'
 import { AudioFileStatus, AudioGraphStatus } from './common/types'
 
-export interface AppProps {
-
+export interface FFTFlipBookProps {
+    width: number
+    height: number
 }
 
-export interface AppState {
+export interface FFTFlipBookState {
     audioGraph: AudioGraph
     readOnlyBufferIndex: number
     audioFileStatus: AudioFileStatus
     audioGraphStatus: AudioGraphStatus
+    normalVisualizationStyle: boolean
 }
 
-export default class App extends React.Component<AppProps, AppState> {
+export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFlipBookState> {
 
     audioFile: AudioFile
 
-    constructor(props: AppProps) {
+    constructor(props: FFTFlipBookProps) {
 
         super(props)
 
@@ -30,7 +31,8 @@ export default class App extends React.Component<AppProps, AppState> {
             audioGraph: null,
             readOnlyBufferIndex: 0,
             audioFileStatus: AudioFileStatus.Uninitiated,
-            audioGraphStatus: AudioGraphStatus.Disconnected
+            audioGraphStatus: AudioGraphStatus.Disconnected,
+            normalVisualizationStyle: true
         }
 
     }
@@ -40,11 +42,11 @@ export default class App extends React.Component<AppProps, AppState> {
         this.setState({ audioGraph })
     }
 
-    updateReadOnlyBufferIndex(newIndex: number) {
+    updateReadOnlyBufferIndex(newIndex: number): void {
         this.setState({ readOnlyBufferIndex: newIndex })
     }
 
-    handleTogglePlay() {
+    handleTogglePlay(): void {
         switch (this.state.audioGraphStatus) {
             case AudioGraphStatus.Disconnected:
                 return this.setState({ audioGraphStatus: this.state.audioGraph.connectNodes() })
@@ -53,16 +55,20 @@ export default class App extends React.Component<AppProps, AppState> {
         }
     }
 
-    handleLoadFile() {
+    handleResetGraphToDefaultState(): void {
+        this.updateReadOnlyBufferIndex(0)
+        this.state.audioGraph.resetGraphToDefaultState()
+        this.setState({ audioGraphStatus: AudioGraphStatus.Disconnected })
+    }
 
+    handleLoadFile(): void {
         this.setState({ audioFileStatus: AudioFileStatus.Loading })
-
         const { audioGraph } = this.state
 
-        audioGraph.disconnectAllNodes()
+        this.handleResetGraphToDefaultState()
 
         const request = new XMLHttpRequest()
-        request.open('get', 'http://localhost:3000/song.wav', true)
+        request.open('get', 'http://localhost:3000/tone.wav', true)
         request.responseType = 'arraybuffer'
         request.onload = () => {
             audioGraph.audioContext.decodeAudioData(request.response, (buffer) => {
@@ -77,9 +83,21 @@ export default class App extends React.Component<AppProps, AppState> {
         request.send()
     }
 
+    renderVisualization(): JSX.Element {
+        if (!this.audioFile) return null
+        return (
+            <Visualization
+                spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]}
+                width={this.props.width}
+                height={this.props.height}
+                normalVisualizationStyle={this.state.normalVisualizationStyle}
+            />
+        )
+    }
+
     render() {
 
-        const { audioGraph } = this.state
+        const { audioGraph, readOnlyBufferIndex, audioFileStatus } = this.state
 
         if (!audioGraph) {
             return (
@@ -91,19 +109,21 @@ export default class App extends React.Component<AppProps, AppState> {
 
         return (
             <div>
-                <Settings/>
                 <FileLoader
-                    canLoadFile={audioGraph !== null && this.state.audioFileStatus !== AudioFileStatus.Loading}
+                    canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
                     handleLoadFile={this.handleLoadFile.bind(this)}
                 />
-                <FlipBook/>
+                {this.renderVisualization()}
                 <NavigationAndInfo
-                    bufferIndex={this.state.readOnlyBufferIndex}
-                    status={this.state.audioFileStatus}
+                    bufferIndex={readOnlyBufferIndex}
+                    audioFileStatus={audioFileStatus}
+                    audioGraphStatus={this.state.audioGraphStatus}
+                    handleVisualizationStyleChange={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}
+                    normalVisualizationStyle={this.state.normalVisualizationStyle}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     togglePlay={this.handleTogglePlay.bind(this)}
-                    isLooping={this.state.audioGraph.getIsLooping()}
-                    toggleIsLooping={() => this.state.audioGraph.toggleIsLooping()}
+                    isLooping={audioGraph.getIsLooping()}
+                    toggleIsLooping={() => audioGraph.toggleIsLooping()}
                 />
             </div>
         )

@@ -34,6 +34,11 @@ export default class AudioGraph {
         return AudioGraphStatus.Connected
     }
 
+    public resetGraphToDefaultState(): AudioGraphStatus {
+        this.bufferIndex = 0
+        return this.disconnectAllNodes()
+    }
+
     public disconnectAllNodes(): AudioGraphStatus {
         if (this.gainNode) this.gainNode.disconnect()
         if (this.specialNode) this.specialNode.disconnect()
@@ -42,9 +47,14 @@ export default class AudioGraph {
     }
 
     public updateBufferIndex(increment: number, audioFile: AudioFile): void {
-        this.bufferIndex += increment
+        const wouldBeOutOfRange = (this.bufferIndex + increment < 0) || (this.bufferIndex + 1 + increment >= audioFile.numFullBuffers)
+        if (wouldBeOutOfRange) {
+            this.disconnectAllNodes()
+            return
+        }
         if (this.bufferIndex < 0) this.bufferIndex = 0
-        if (this.bufferIndex >= audioFile.numFullBuffers) this.disconnectAllNodes()
+        if (this.bufferIndex + 1 >= audioFile.numFullBuffers) this.disconnectAllNodes()
+        this.bufferIndex += increment
         this.distributeNewBufferIndex(this.bufferIndex)
     }
 

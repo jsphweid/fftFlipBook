@@ -1,13 +1,16 @@
 import * as React from 'react'
-import { AudioFileStatus } from '../common/types'
+import { AudioFileStatus, AudioGraphStatus } from '../common/types'
 
 export interface NavigationProps {
-    status: AudioFileStatus
+    audioFileStatus: AudioFileStatus
     handleIncrement: (num: number) => void
     togglePlay: () => void
     isLooping: boolean
     toggleIsLooping: () => void
     bufferIndex: number
+    audioGraphStatus: AudioGraphStatus
+    handleVisualizationStyleChange: () => void
+    normalVisualizationStyle: boolean
 }
 
 const Navigation: React.SFC<NavigationProps> = (props: NavigationProps) => {
@@ -20,15 +23,19 @@ const Navigation: React.SFC<NavigationProps> = (props: NavigationProps) => {
             <div className="ffb-navigation-info-navigation">
                 <button onClick={() => props.handleIncrement(-10)}>-10</button>
                 <button onClick={() => props.handleIncrement(-1)}>-1</button>
-                <button onClick={() => props.togglePlay()}>Play/Pause</button>
+                <button onClick={() => props.togglePlay()}>{props.audioGraphStatus === AudioGraphStatus.Connected ? 'Pause' : 'Play'}</button>
                 <button onClick={() => props.handleIncrement(1)}>+1</button>
                 <button onClick={() => props.handleIncrement(10)}>+10</button>
                 <button onClick={() => props.toggleIsLooping()}>{props.isLooping ? 'Play Normal' : 'Loop'}</button>
+                <button onClick={props.handleVisualizationStyleChange.bind(this)}>
+                    {props.normalVisualizationStyle ? 'Change to Circle Style' : 'Change to Normal Style'}
+                </button>
             </div>
         </div>
     )
 
-    switch (props.status) {
+    switch (props.audioFileStatus) {
+        default:
         case AudioFileStatus.Uninitiated:
             return <div>Click load...</div>
         case AudioFileStatus.Loading:
