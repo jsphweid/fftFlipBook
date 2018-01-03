@@ -1,11 +1,14 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import App from './app/fft-flip-book'
+import FFTFlipBook from './app/fft-flip-book'
 
 import './styles.scss'
 
 ReactDOM.render(
-    <App />,
+    <FFTFlipBook
+        width={300}
+        height={300}
+    />,
     document.getElementById('app')
 )
 

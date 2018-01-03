@@ -7,23 +7,23 @@ import AudioGraph from './audio-engine/audio-graph'
 import NavigationAndInfo from './navigation-and-info/navigation-and-info'
 import { AudioFileStatus, AudioGraphStatus } from './common/types'
 
-
-export interface AppProps {
-
+export interface FFTFlipBookProps {
+    width: number
+    height: number
 }
 
-export interface AppState {
+export interface FFTFlipBookState {
     audioGraph: AudioGraph
     readOnlyBufferIndex: number
     audioFileStatus: AudioFileStatus
     audioGraphStatus: AudioGraphStatus
 }
 
-export default class App extends React.Component<AppProps, AppState> {
+export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFlipBookState> {
 
     audioFile: AudioFile
 
-    constructor(props: AppProps) {
+    constructor(props: FFTFlipBookProps) {
 
         super(props)
 
@@ -67,7 +67,7 @@ export default class App extends React.Component<AppProps, AppState> {
         this.handleResetGraphToDefaultState()
 
         const request = new XMLHttpRequest()
-        request.open('get', 'http://localhost:3000/song.wav', true)
+        request.open('get', 'http://localhost:3000/tone.wav', true)
         request.responseType = 'arraybuffer'
         request.onload = () => {
             audioGraph.audioContext.decodeAudioData(request.response, (buffer) => {
@@ -85,7 +85,11 @@ export default class App extends React.Component<AppProps, AppState> {
     renderFlipBook(): JSX.Element {
         if (!this.audioFile) return null
         return (
-            <FlipBook spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]} />
+            <FlipBook
+                spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]}
+                width={this.props.width}
+                height={this.props.height}
+            />
         )
     }
 
