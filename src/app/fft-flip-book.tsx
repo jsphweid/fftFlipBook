@@ -16,6 +16,7 @@ export interface FFTFlipBookState {
     readOnlyBufferIndex: number
     audioFileStatus: AudioFileStatus
     audioGraphStatus: AudioGraphStatus
+    normalVisualizationStyle: boolean
 }
 
 export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFlipBookState> {
@@ -30,7 +31,8 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
             audioGraph: null,
             readOnlyBufferIndex: 0,
             audioFileStatus: AudioFileStatus.Uninitiated,
-            audioGraphStatus: AudioGraphStatus.Disconnected
+            audioGraphStatus: AudioGraphStatus.Disconnected,
+            normalVisualizationStyle: true
         }
 
     }
@@ -88,6 +90,7 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
                 spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]}
                 width={this.props.width}
                 height={this.props.height}
+                normalVisualizationStyle={this.state.normalVisualizationStyle}
             />
         )
     }
@@ -115,6 +118,8 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
                     bufferIndex={readOnlyBufferIndex}
                     audioFileStatus={audioFileStatus}
                     audioGraphStatus={this.state.audioGraphStatus}
+                    handleVisualizationStyleChange={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}
+                    normalVisualizationStyle={this.state.normalVisualizationStyle}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     togglePlay={this.handleTogglePlay.bind(this)}
                     isLooping={audioGraph.getIsLooping()}

@@ -9,6 +9,8 @@ export interface NavigationProps {
     toggleIsLooping: () => void
     bufferIndex: number
     audioGraphStatus: AudioGraphStatus
+    handleVisualizationStyleChange: () => void
+    normalVisualizationStyle: boolean
 }
 
 const Navigation: React.SFC<NavigationProps> = (props: NavigationProps) => {
@@ -25,6 +27,9 @@ const Navigation: React.SFC<NavigationProps> = (props: NavigationProps) => {
                 <button onClick={() => props.handleIncrement(1)}>+1</button>
                 <button onClick={() => props.handleIncrement(10)}>+10</button>
                 <button onClick={() => props.toggleIsLooping()}>{props.isLooping ? 'Play Normal' : 'Loop'}</button>
+                <button onClick={props.handleVisualizationStyleChange.bind(this)}>
+                    {props.normalVisualizationStyle ? 'Change to Circle Style' : 'Change to Normal Style'}
+                </button>
             </div>
         </div>
     )

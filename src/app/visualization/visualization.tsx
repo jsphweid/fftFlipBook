@@ -7,10 +7,11 @@ export interface FlipBookProps {
     spectrum: Float32Array
     width: number
     height: number
+    normalVisualizationStyle: boolean
 }
 
 const FlipBook: React.SFC<FlipBookProps> = (props: FlipBookProps) => {
-    
+
     const spectrumAsNormalArr: number[] = Array.prototype.slice.call(props.spectrum)
     const spectrumLength: number = spectrumAsNormalArr.length
 
@@ -44,19 +45,18 @@ const FlipBook: React.SFC<FlipBookProps> = (props: FlipBookProps) => {
         })
     }
 
-    const points: PointType[] = getPointsForSpectrumAsCircle() // ternary logic here
+    const points: PointType[] = props.normalVisualizationStyle
+        ? getPointsForSpectrumAsLine()
+        : getPointsForSpectrumAsCircle()
 
     return (
         <Stage width={props.width} height={props.height}>
             <Layer>
-                {
-                    spectrumAsNormalArr ?
-                        <Line
-                            points={transformArrayOfPointsToKonvaPointArray(points)}
-                            stroke={'black'}
-                            shadowBlur={2}
-                        /> : null
-                }
+                <Line
+                    points={transformArrayOfPointsToKonvaPointArray(points)}
+                    stroke={'black'}
+                    shadowBlur={2}
+                />
             </Layer>
         </Stage>
     )
