@@ -3,7 +3,7 @@ import FileLoader from './file-loader/file-loader'
 import Visualization from './visualization/visualization'
 import AudioFile from './audio-engine/audio-file'
 import AudioGraph from './audio-engine/audio-graph'
-import NavigationAndInfo from './navigation-and-info/navigation-and-info'
+import Navigation from './navigation/navigation'
 import { AudioFileStatus, AudioGraphStatus } from './common/types'
 
 export interface FFTFlipBookProps {
@@ -17,6 +17,7 @@ export interface FFTFlipBookState {
     audioFileStatus: AudioFileStatus
     audioGraphStatus: AudioGraphStatus
     normalVisualizationStyle: boolean
+    isLooping: boolean
 }
 
 export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFlipBookState> {
@@ -32,7 +33,8 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
             readOnlyBufferIndex: 0,
             audioFileStatus: AudioFileStatus.Uninitiated,
             audioGraphStatus: AudioGraphStatus.Disconnected,
-            normalVisualizationStyle: true
+            normalVisualizationStyle: true,
+            isLooping: false
         }
 
     }
@@ -68,7 +70,7 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         this.handleResetGraphToDefaultState()
 
         const request = new XMLHttpRequest()
-        request.open('get', 'http://localhost:3000/tone.wav', true)
+        request.open('get', 'http://localhost:3000/song.wav', true)
         request.responseType = 'arraybuffer'
         request.onload = () => {
             audioGraph.audioContext.decodeAudioData(request.response, (buffer) => {
@@ -83,21 +85,16 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         request.send()
     }
 
-    renderVisualization(): JSX.Element {
-        if (!this.audioFile) return null
-        return (
-            <Visualization
-                spectrum={this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()]}
-                width={this.props.width}
-                height={this.props.height}
-                normalVisualizationStyle={this.state.normalVisualizationStyle}
-            />
-        )
+    handleToggleIsLooping() {
+        const newIsLooping: boolean = !this.state.isLooping
+        this.state.audioGraph.setReadOnlyIsLooping(newIsLooping)
+        this.setState({ isLooping: newIsLooping })
     }
 
     render() {
 
-        const { audioGraph, readOnlyBufferIndex, audioFileStatus } = this.state
+        const { audioGraph, normalVisualizationStyle, audioFileStatus } = this.state
+        const spectrum: Float32Array = this.audioFile ? this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()] : new Float32Array([])
 
         if (!audioGraph) {
             return (
@@ -108,22 +105,28 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         }
 
         return (
-            <div>
+            <div className="ffb" style={{ width: `${this.props.width}px`, height: `${this.props.height}px` }}>
                 <FileLoader
                     canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
                     handleLoadFile={this.handleLoadFile.bind(this)}
                 />
-                {this.renderVisualization()}
-                <NavigationAndInfo
-                    bufferIndex={readOnlyBufferIndex}
+                <Visualization
+                    spectrum={spectrum}
+                    width={this.props.width}
+                    height={this.props.height}
+                    normalVisualizationStyle={this.state.normalVisualizationStyle}
+                />
+                <button onClick={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}>
+                    {normalVisualizationStyle ? 'to Circle Style' : 'to Normal Style'}
+                </button>
+                <Navigation
                     audioFileStatus={audioFileStatus}
                     audioGraphStatus={this.state.audioGraphStatus}
-                    handleVisualizationStyleChange={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}
-                    normalVisualizationStyle={this.state.normalVisualizationStyle}
                     handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
                     togglePlay={this.handleTogglePlay.bind(this)}
-                    isLooping={audioGraph.getIsLooping()}
-                    toggleIsLooping={() => audioGraph.toggleIsLooping()}
+                    isLooping={this.state.isLooping}
+                    toggleIsLooping={this.handleToggleIsLooping.bind(this)}
+                    normalVisualizationStyle={this.state.normalVisualizationStyle}
                 />
             </div>
         )

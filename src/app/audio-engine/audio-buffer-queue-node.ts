@@ -11,7 +11,7 @@ export default class AudioBufferQueueNode {
         this.scriptProcessorNode.addEventListener('audioprocess', (e: AudioProcessingEvent) => {
             const out: AudioBuffer = e.outputBuffer
             const chunk: Float32Array = audioFile.signalDataModifiedChunked[audioGraph.getBufferIndex()]
-            if (!audioGraph.getIsLooping()) {
+            if (!audioGraph.readOnlyIsLooping) {
                 audioGraph.updateBufferIndex(1, audioFile)
             }
             out.copyToChannel(chunk, 0)

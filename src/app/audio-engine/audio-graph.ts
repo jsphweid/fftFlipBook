@@ -7,7 +7,7 @@ export default class AudioGraph {
     public static BUFFER_SIZE: number = 2048
 
     private bufferIndex: number = 0
-    private isLooping: boolean = false
+    public readOnlyIsLooping: boolean = false
 
     public audioContext: AudioContext
 
@@ -62,11 +62,8 @@ export default class AudioGraph {
         return this.bufferIndex
     }
 
-    public toggleIsLooping(): void {
-        this.isLooping = !this.isLooping
+    public setReadOnlyIsLooping(isLooping: boolean): void {
+        this.readOnlyIsLooping = isLooping
     }
 
-    public getIsLooping(): boolean {
-        return this.isLooping
-    }
 }

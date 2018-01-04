@@ -50,7 +50,7 @@ const FlipBook: React.SFC<FlipBookProps> = (props: FlipBookProps) => {
         : getPointsForSpectrumAsCircle()
 
     return (
-        <Stage width={props.width} height={props.height}>
+        <Stage className="ffb-visualization" width={props.width} height={props.height}>
             <Layer>
                 <Line
                     points={transformArrayOfPointsToKonvaPointArray(points)}

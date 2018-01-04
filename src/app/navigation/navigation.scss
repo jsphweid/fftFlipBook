@@ -1,0 +1,16 @@
+.ffb-navigation-row {
+
+}
+
+.ffb-navigation-buttons {
+    width: 100%;
+    display: inline-flex;
+
+    button {
+        flex-grow: 1;
+    }
+
+    input {
+        width: 45px;
+    }
+}
