@@ -114,8 +114,11 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
                     height={this.props.height}
                     normalVisualizationStyle={this.state.normalVisualizationStyle}
                 />
-                <button onClick={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}>
-                    {normalVisualizationStyle ? 'to Circle Style' : 'to Normal Style'}
+                <button
+                    onClick={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}
+                    className="ffb-button"
+                >
+                    {normalVisualizationStyle ? 'Circle' : 'Normal'}
                 </button>
                 <Navigation
                     audioFileStatus={audioFileStatus}
