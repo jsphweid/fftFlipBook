@@ -32,11 +32,11 @@ export default class Navigation extends React.Component<NavigationProps, Navigat
         }
     }
 
-    handleInputChange = (event: any) => {
+    handleInputChange = (event: any): void => {
         this.setState({ inputValue: event.currentTarget.value })
     }
 
-    submitNewBufferIndex = () => {
+    submitNewBufferIndex = (): void => {
         this.props.handleIncrement(this.state.inputValue - this.props.readOnlyBufferIndex)
     }
 

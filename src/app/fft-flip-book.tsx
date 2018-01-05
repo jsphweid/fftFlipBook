@@ -44,11 +44,11 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         this.setState({ audioGraph })
     }
 
-    updateReadOnlyBufferIndex(newIndex: number): void {
+    updateReadOnlyBufferIndex = (newIndex: number): void => {
         this.setState({ readOnlyBufferIndex: newIndex })
     }
 
-    handleTogglePlay(): void {
+    handleTogglePlay = (): void => {
         switch (this.state.audioGraphStatus) {
             case AudioGraphStatus.Disconnected:
                 return this.setState({ audioGraphStatus: this.state.audioGraph.connectNodes() })
@@ -57,35 +57,28 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         }
     }
 
-    handleResetGraphToDefaultState(): void {
+    handleResetGraphToDefaultState = (): void => {
         this.updateReadOnlyBufferIndex(0)
         this.state.audioGraph.resetGraphToDefaultState()
         this.setState({ audioGraphStatus: AudioGraphStatus.Disconnected })
     }
 
-    handleLoadFile(): void {
+    handleLoadFile = (file: any): void => {
+        console.log('file', file)        
         this.setState({ audioFileStatus: AudioFileStatus.Loading })
         const { audioGraph } = this.state
-
         this.handleResetGraphToDefaultState()
+        audioGraph.audioContext.decodeAudioData(file, (buffer) => {
+            const audioFile = new AudioFile(this.state.audioGraph, buffer, AudioGraph.BUFFER_SIZE, 0)
+            this.audioFile = audioFile
+            audioFile.process()
+            audioGraph.buildNodes(audioFile)
+            this.setState({ audioFileStatus: AudioFileStatus.Ready })
 
-        const request = new XMLHttpRequest()
-        request.open('get', 'http://localhost:3000/song.wav', true)
-        request.responseType = 'arraybuffer'
-        request.onload = () => {
-            audioGraph.audioContext.decodeAudioData(request.response, (buffer) => {
-                const audioFile = new AudioFile(this.state.audioGraph, buffer, AudioGraph.BUFFER_SIZE, 0)
-                this.audioFile = audioFile
-                audioFile.process()
-                audioGraph.buildNodes(audioFile)
-                this.setState({ audioFileStatus: AudioFileStatus.Ready })
-
-            })
-        }
-        request.send()
+        })
     }
 
-    handleToggleIsLooping() {
+    handleToggleIsLooping = (): void => {
         const newIsLooping: boolean = !this.state.isLooping
         this.state.audioGraph.setReadOnlyIsLooping(newIsLooping)
         this.setState({ isLooping: newIsLooping })
@@ -106,7 +99,7 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
             <div className="ffb" style={{ width: `${this.props.width}px`, height: `${this.props.height}px` }}>
                 <FileLoader
                     canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
-                    handleLoadFile={this.handleLoadFile.bind(this)}
+                    handleLoadFile={this.handleLoadFile}
                 />
                 <Visualization
                     spectrum={spectrum}
