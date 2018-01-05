@@ -49,6 +49,8 @@ export default class AudioGraph {
     public updateBufferIndex(increment: number, audioFile: AudioFile): void {
         const wouldBeOutOfRange = (this.bufferIndex + increment < 0) || (this.bufferIndex + 1 + increment >= audioFile.numFullBuffers)
         if (wouldBeOutOfRange) {
+            this.bufferIndex = audioFile.numFullBuffers - 2
+            this.distributeNewBufferIndex(this.bufferIndex)
             this.disconnectAllNodes()
             return
         }

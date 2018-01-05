@@ -98,9 +98,7 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
 
         if (!audioGraph) {
             return (
-                <div>
-                    loading audio graph
-                </div>
+                <div>loading audio graph</div>
             )
         }
 
@@ -127,6 +125,7 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
                     isLooping={this.state.isLooping}
                     toggleIsLooping={this.handleToggleIsLooping.bind(this)}
                     normalVisualizationStyle={this.state.normalVisualizationStyle}
+                    readOnlyBufferIndex={this.state.readOnlyBufferIndex}
                 />
             </div>
         )
