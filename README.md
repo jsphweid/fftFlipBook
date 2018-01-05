@@ -17,6 +17,7 @@ A flip book to explore the FFTs of audio visually.
  - ~~produces fft image with what is currently in buffer~~
  - ~~dropzone...~~
  - ~~UI looks decent~~
+ - confirm that you can plug this in another app as a package
 
 ### The Nice features to have
  - stereo (process both channels, but an easier idea would be to simply mix them down first as an MVP)
@@ -25,4 +26,5 @@ A flip book to explore the FFTs of audio visually.
  - compress the spectrum and use colors to differentiate the magnitude?
  - better logic as far as incrementing / decrementing / playing past index safety
  - better positioning of the units
- - drastically better UI.
+ - drastically better UI
+ - different builds for importing as not only a package but <script> tag
