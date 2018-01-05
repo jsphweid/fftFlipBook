@@ -1,0 +1,25 @@
+.ffb-navigation {
+    position: absolute;
+    width: 100%;    
+}
+
+.ffb-navigation-topRight {
+    top: 0;
+}
+
+.ffb-navigation-bottomLeft {
+    bottom: 0;
+}
+
+.ffb-navigation-buttons {
+    display: inline-flex;
+    width: 100%;    
+
+    button {
+        flex-grow: 1;
+    }
+
+    input {
+        width: 45px;
+    }
+}

@@ -6,8 +6,8 @@ import './styles.scss'
 
 ReactDOM.render(
     <FFTFlipBook
-        width={300}
-        height={300}
+        width={400}
+        height={400}
     />,
     document.getElementById('app')
 )

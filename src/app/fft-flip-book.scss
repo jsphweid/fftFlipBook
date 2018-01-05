@@ -1,0 +1,46 @@
+.ffb {
+    position: relative;
+    border: 1px solid black;
+}
+
+.ffb-styleChanger-bottomLeft {
+    position: absolute;
+    bottom: 182px;
+    left: 0;
+}
+.ffb-styleChanger-topRight {
+    position: absolute;
+    top: 182px;
+    right: 0;
+}
+
+.ffb-button {
+    height: 40px;
+    background-color: #EEEEEE;
+    border: 1px solid #BDBDBD;
+    color: #424242;
+
+    &:hover:not(:disabled):not(.button--loading) {
+        background-color: #E0E0E0;
+        border-color: #9E9E9E;
+    }
+
+    padding: 12px 8px 10px 8px;
+    font-size: .875rem;
+    line-height: 1rem;
+    width: initial;
+
+    user-select: none;
+    display: block;
+
+    background-clip: padding-box;
+    font-weight: 500;
+    text-align: center;
+
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in;
+    transition-property: background-color, border-color, color;
+    cursor: pointer;
+
+    &:focus { outline: none; }
+}

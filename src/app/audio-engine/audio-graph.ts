@@ -7,7 +7,7 @@ export default class AudioGraph {
     public static BUFFER_SIZE: number = 2048
 
     private bufferIndex: number = 0
-    private isLooping: boolean = false
+    public readOnlyIsLooping: boolean = false
 
     public audioContext: AudioContext
 
@@ -49,6 +49,8 @@ export default class AudioGraph {
     public updateBufferIndex(increment: number, audioFile: AudioFile): void {
         const wouldBeOutOfRange = (this.bufferIndex + increment < 0) || (this.bufferIndex + 1 + increment >= audioFile.numFullBuffers)
         if (wouldBeOutOfRange) {
+            this.bufferIndex = audioFile.numFullBuffers - 2
+            this.distributeNewBufferIndex(this.bufferIndex)
             this.disconnectAllNodes()
             return
         }
@@ -62,11 +64,8 @@ export default class AudioGraph {
         return this.bufferIndex
     }
 
-    public toggleIsLooping(): void {
-        this.isLooping = !this.isLooping
+    public setReadOnlyIsLooping(isLooping: boolean): void {
+        this.readOnlyIsLooping = isLooping
     }
 
-    public getIsLooping(): boolean {
-        return this.isLooping
-    }
 }
