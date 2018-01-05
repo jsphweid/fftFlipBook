@@ -1,12 +1,11 @@
 .ffb-fileLoader {
-
+    position: absolute;
     padding: 24px;
     width: 90px;
     height: 90px;
     border-width: 2px;
     border-color: rgb(102, 102, 102);
     border-style: dashed;
-    border-radius: 5px;
 
 
     .ffb-fileLoader-dropzone--error {
@@ -14,4 +13,14 @@
         font-weight: bold;
     }
 
+}
+
+.ffb-fileLoader-topRight {
+    right: 0;
+    top: 40px;
+}
+
+.ffb-fileLoader-bottomLeft {
+    left: 0;
+    bottom: 40px;
 }

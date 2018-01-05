@@ -84,12 +84,48 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
         this.setState({ isLooping: newIsLooping })
     }
 
-    render() {
-
+    renderButtonsAndDropzone = (): JSX.Element => {
         const { audioGraph, normalVisualizationStyle, audioFileStatus } = this.state
+        
+        const fileLoader: JSX.Element =
+            <FileLoader
+                key={1}
+                canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
+                handleLoadFile={this.handleLoadFile}
+                normalVisualizationStyle={normalVisualizationStyle}
+            />
+
+        const visualStyleChanger: JSX.Element =
+            <button
+                className={`ffb-button ${normalVisualizationStyle ? 'ffb-styleChanger-topRight' : 'ffb-styleChanger-bottomLeft'}`}
+                key={2}
+                onClick={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}
+            >
+                {normalVisualizationStyle ? 'Circle' : 'Normal'}
+            </button>
+        
+        const navigation: JSX.Element =
+            <Navigation
+                key={3}
+                audioFileStatus={audioFileStatus}
+                audioGraphStatus={this.state.audioGraphStatus}
+                handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
+                togglePlay={this.handleTogglePlay.bind(this)}
+                isLooping={this.state.isLooping}
+                toggleIsLooping={this.handleToggleIsLooping.bind(this)}
+                normalVisualizationStyle={this.state.normalVisualizationStyle}
+                readOnlyBufferIndex={this.state.readOnlyBufferIndex}
+            />
+
+        return normalVisualizationStyle
+            ? <div>{[navigation, fileLoader, visualStyleChanger]}</div>
+            : <div>{[visualStyleChanger, fileLoader, navigation]}</div>
+    }
+
+    render() {
         const spectrum: Float32Array = this.audioFile ? this.audioFile.chunkedFfts[this.state.audioGraph.getBufferIndex()] : new Float32Array([])
 
-        if (!audioGraph) {
+        if (!this.state.audioGraph) {
             return (
                 <div>loading audio graph</div>
             )
@@ -97,32 +133,13 @@ export default class FFTFlipBook extends React.Component<FFTFlipBookProps, FFTFl
 
         return (
             <div className="ffb" style={{ width: `${this.props.width}px`, height: `${this.props.height}px` }}>
-                <FileLoader
-                    canLoadFile={audioGraph !== null && audioFileStatus !== AudioFileStatus.Loading}
-                    handleLoadFile={this.handleLoadFile}
-                />
                 <Visualization
                     spectrum={spectrum}
                     width={this.props.width}
                     height={this.props.height}
                     normalVisualizationStyle={this.state.normalVisualizationStyle}
                 />
-                <button
-                    onClick={() => this.setState({ normalVisualizationStyle: !this.state.normalVisualizationStyle })}
-                    className="ffb-button"
-                >
-                    {normalVisualizationStyle ? 'Circle' : 'Normal'}
-                </button>
-                <Navigation
-                    audioFileStatus={audioFileStatus}
-                    audioGraphStatus={this.state.audioGraphStatus}
-                    handleIncrement={(num: number) => audioGraph.updateBufferIndex(num, this.audioFile)}
-                    togglePlay={this.handleTogglePlay.bind(this)}
-                    isLooping={this.state.isLooping}
-                    toggleIsLooping={this.handleToggleIsLooping.bind(this)}
-                    normalVisualizationStyle={this.state.normalVisualizationStyle}
-                    readOnlyBufferIndex={this.state.readOnlyBufferIndex}
-                />
+                {this.renderButtonsAndDropzone()}
             </div>
         )
 

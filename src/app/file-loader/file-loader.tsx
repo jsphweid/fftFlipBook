@@ -5,6 +5,7 @@ import Dropzone from 'react-dropzone'
 export interface FileLoaderProps {
     handleLoadFile: (file: any) => void
     canLoadFile: boolean
+    normalVisualizationStyle: boolean
 }
 
 export interface FileLoaderState {
@@ -48,13 +49,17 @@ export default class FileLoader extends React.Component<FileLoaderProps, FileLoa
 
     render() {
 
+        const positionClass: string = this.props.normalVisualizationStyle
+            ? 'ffb-fileLoader-topRight'
+            : 'ffb-fileLoader-bottomLeft'
+
         const dropzoneErrorClass = this.state.dropzoneText !== DEFAULT_DROPZONE_MESSAGE
             ? 'ffb-fileLoader-dropzone--error'
             : null
 
         return (
             <Dropzone
-                className="ffb-fileLoader"
+                className={`ffb-fileLoader ${positionClass}`}
                 onDrop={this.handleOnDrop.bind(this)}
                 accept={'audio/wav'}
             >

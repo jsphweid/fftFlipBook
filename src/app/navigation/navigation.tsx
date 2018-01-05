@@ -41,8 +41,13 @@ export default class Navigation extends React.Component<NavigationProps, Navigat
     }
 
     render() {
+
+        const positionClass: string = this.props.normalVisualizationStyle
+            ? 'ffb-navigation-topRight'
+            : 'ffb-navigation-bottomLeft'
+
         const renderButtons = (): JSX.Element => (
-            <div className="ffb-navigation">
+            <div className={`ffb-navigation ${positionClass}`}>
                 <div className="ffb-navigation-buttons">
                     <input
                         type="number"
@@ -66,7 +71,7 @@ export default class Navigation extends React.Component<NavigationProps, Navigat
         switch (this.props.audioFileStatus) {
             default:
             case AudioFileStatus.Uninitiated:
-                return <div>Click load...</div>
+                return null
             case AudioFileStatus.Loading:
                 return <div>Loading...</div>
             case AudioFileStatus.Ready:
