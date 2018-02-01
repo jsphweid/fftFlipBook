@@ -6,18 +6,18 @@ Install Dependencies:
  - `npm install --save react react-dom`
 
 Then install library:
- - `npm install --save fft-flip-book`
+ - `npm install --save react-fft-flipbook`
 
 assuming this is an index.js in src/
 ```
 import React from 'react'
 import ReactDOM from 'react-dom'
-import FFTFlipBook from 'fft-flip-book'
+import ReactFftFlipbook from 'react-fft-flipbook'
 
-import "../node_modules/fft-flip-book/dist/package/styles.css"
+import "../node_modules/react-fft-flipbook/dist/package/styles.css"
 
 ReactDOM.render(
-    <FFTFlipBook
+    <ReactFftFlipbook
         width={400}
         height={400}
     />,

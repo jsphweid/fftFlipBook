@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import FFTFlipBook from './app/fft-flip-book'
+import FFTFlipBook from './app/react-fft-flipbook'
 
 import './styles.scss'
 
