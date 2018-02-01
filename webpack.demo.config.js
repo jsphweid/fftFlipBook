@@ -7,7 +7,7 @@ const plugins = [
     new webpack.optimize.UglifyJsPlugin(),
     new HtmlWebpackPlugin({
         title: "FFT Flip Book",
-        template: "./src/htmlTemplate.ejs",
+        template: "./src/demo.html",
         inject: true
     })
 ]
@@ -18,12 +18,7 @@ if (process.env.NODE_ENV === 'fakerun') {
 
 module.exports = {
     devtool: 'cheap-module-source-map',
-    entry: {
-        client: [
-            './src/index.ts',
-            './src/styles.scss'
-        ]
-    },
+    entry: './src/demo.tsx',
     output: {
         path: path.resolve(__dirname, 'dist/artifacts'),
         filename: 'bundle-[chunkhash].js'
