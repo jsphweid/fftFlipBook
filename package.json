@@ -1,6 +1,6 @@
 {
   "name": "fft-flip-book",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A flip book to explore the FFTs of audio visually.",
   "main": "dist/package/index.js",
   "typs": "dist/package/index.d.ts",
