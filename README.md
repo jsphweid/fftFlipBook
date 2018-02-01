@@ -38,7 +38,7 @@ ReactDOM.render(
  - ~~produces fft image with what is currently in buffer~~
  - ~~dropzone...~~
  - ~~UI looks decent~~
- - confirm that you can plug this in another app as a package
+ - ~~confirm that you can plug this in another app as a package~~
 
 ### The Nice features to have
  - stereo (process both channels, but an easier idea would be to simply mix them down first as an MVP)
