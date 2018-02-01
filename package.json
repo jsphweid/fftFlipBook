@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "A flip book to explore the FFTs of audio visually.",
   "main": "dist/package/index.js",
-  "typs": "dist/package/index.d.ts",
+  "types": "dist/package/index.d.ts",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.config.js",
     "build:demo": "npm run clean && webpack --config webpack.demo.config.js",
@@ -47,7 +47,6 @@
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^21.2.1",
-    "konva": "^1.7.6",
     "node-sass": "^4.5.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
@@ -70,6 +69,7 @@
   },
   "dependencies": {
     "react-konva": "^1.6.4",
+    "konva": "^1.7.6",
     "jsfft": "0.0.3",
     "react-dropzone": "^4.2.3"
   }
