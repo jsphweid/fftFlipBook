@@ -1,10 +1,31 @@
 # fftFlipBook
 A flip book to explore the FFTs of audio visually.
 
-### DEVELOP
+### Use
+Install Dependencies:
+ - `npm install --save react react-dom`
 
-#### Dependencies:
-     - http-server `npm install http-server -g`
+Then install library:
+ - `npm install --save fft-flip-book`
+
+assuming this is an index.js in src/
+```
+import React from 'react'
+import ReactDOM from 'react-dom'
+import FFTFlipBook from 'fft-flip-book'
+
+import "../node_modules/fft-flip-book/dist/package/styles.css"
+
+ReactDOM.render(
+    <FFTFlipBook
+        width={400}
+        height={400}
+    />,
+    document.getElementById('app')
+)
+```
+
+### DEVELOP
 
 #### Run
 `npm run start`
