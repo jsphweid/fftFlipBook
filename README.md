@@ -1,10 +1,15 @@
 # fftFlipBook
 A flip book to explore the FFTs of audio visually.
 
-### DEVELOP
+### Use
+Install Dependencies:
+ - `npm install --save react`
 
-#### Dependencies:
-     - http-server `npm install http-server -g`
+Then install library:
+ - `npm install --save fft-flip-book`
+
+
+### DEVELOP
 
 #### Run
 `npm run start`

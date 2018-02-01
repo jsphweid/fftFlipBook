@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A flip book to explore the FFTs of audio visually.",
   "main": "dist/package/index.js",
+  "typs": "dist/package/index.d.ts",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.config.js",
     "build:demo": "npm run clean && webpack --config webpack.demo.config.js",
@@ -10,6 +11,9 @@
     "build:sass": "node-sass src/styles.scss dist/package/styles.css",
     "deploy": "npm run build:demo && ./deploy.sh",
     "clean": "rm -rf dist",
+    "release:patch": "npm run build:package && npm version patch && npm publish",
+    "release:minor": "npm run build:package && npm version minor && npm publish",
+    "release:major": "npm run build:package && npm version major && npm publish",
     "lint": "tslint -p ./tsconfig.json",
     "test": "npm run lint && jest -t",
     "test:dev": "jest --watchAll -t",
@@ -43,14 +47,11 @@
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^21.2.1",
-    "jsfft": "0.0.3",
     "konva": "^1.7.6",
     "node-sass": "^4.5.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-dropzone": "^4.2.3",
     "react-hot-loader": "^3.0.0-beta.6",
-    "react-konva": "^1.6.4",
     "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.2",
     "style-loader": "^0.19.0",
@@ -67,5 +68,9 @@
   "peerDependencies": {
     "react": "^16.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-konva": "^1.6.4",
+    "jsfft": "0.0.3",
+    "react-dropzone": "^4.2.3"
+  }
 }
