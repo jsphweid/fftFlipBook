@@ -1,6 +1,6 @@
 {
   "name": "react-fft-flipbook",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A flip book to explore the FFTs of audio visually built on React.",
   "main": "dist/package/index.js",
   "types": "dist/package/index.d.ts",
